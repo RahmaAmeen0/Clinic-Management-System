@@ -1,4 +1,6 @@
 using ClinicManagementSystem.Context;
+using ClinicManagementSystem.Repositories.ClassRepositories;
+using ClinicManagementSystem.Repositories.IRepositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +23,11 @@ namespace ClinicManagementSystem
             builder.Services.AddDbContext<ClincDBContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+            builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+            builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>();
+            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
