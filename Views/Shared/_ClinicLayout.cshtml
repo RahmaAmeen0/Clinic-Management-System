@@ -52,7 +52,7 @@
                         <li><a href="about.html">About</a></li>
                         <li><a href="departments.html">Departments</a></li>
                         <li><a href="doctors.html">Doctors</a></li>
-                        <li><a href="doctor-schedule.html">Doctor-Schedule</a></li>
+                        <li><a asp-controller="Doctors" asp-action="Index">Doctor-Schedule</a></li>
                         <li><a href="patients.html">Patients</a></li>
                         <li><a asp-controller="Appointment" asp-action="Create" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Appointment" ? "active" : "")">Appointment</a></li>
                         <li><a href="contact.html">Contact</a></li>
