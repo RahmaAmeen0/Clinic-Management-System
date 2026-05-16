@@ -1,0 +1,58 @@
+﻿@model ClinicManagementSystem.ViewModels.DoctorScheduleViewModel
+
+<div class="container text-left" dir="ltr" style="margin-top: 150px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Doctor Schedule Management</h2>
+            <h4 class="text-primary">@Model.DoctorName <span class="text-muted small">(@Model.Specialization)</span></h4>
+        </div>
+        <a href="/DoctorSchedules/Create?doctorId=@Model.DoctorId" class="btn btn-success">
+            Add New Schedule
+        </a>
+    </div>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-warning text-center">@ViewBag.Message</div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var dayGroup in Model.Schedules.GroupBy(s => s.WorkDay))
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm border-primary">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h5 class="m-0">@dayGroup.Key</h5>
+                        </div>
+                        <div class="card-body bg-light">
+                            @foreach (var timeItem in dayGroup)
+                            {
+                                <div class="bg-white p-3 mb-2 rounded border shadow-sm">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-success font-weight-bold">
+                                            @timeItem.StartTimeFormatted - @timeItem.EndTimeFormatted
+                                        </span>
+                                        <a href="/Appointment/Create?AppointmentId=@timeItem.ScheduleId" class="btn btn-sm btn-outline-primary">
+                                            Book
+                                        </a>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end" style="gap: 5px;">
+                                        <a href="/DoctorSchedules/Edit?id=@timeItem.ScheduleId" class="btn btn-sm btn-warning text-white">
+                                            Edit
+                                        </a>
+
+                                        <form asp-action="Delete" asp-route-id="@timeItem.ScheduleId" method="post" onsubmit="return confirm('Are you sure you want to delete this schedule?');" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

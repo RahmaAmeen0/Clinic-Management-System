@@ -1,0 +1,43 @@
+﻿@model ClinicManagementSystem.ViewModels.CreateScheduleViewModel
+
+<div class="container text-left" dir="ltr" style="margin-top: 150px;">
+    <h2>Add New Schedule</h2>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                <input type="hidden" asp-for="DoctorId" />
+
+                <div class="form-group mb-3">
+                    <label class="control-label font-weight-bold">Work Day</label>
+                    <select asp-for="WorkDay" class="form-control">
+                        <option value="">-- Select Day --</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                    </select>
+                    <span asp-validation-for="WorkDay" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="control-label font-weight-bold">Start Time</label>
+                    <input asp-for="StartTime" type="time" class="form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="control-label font-weight-bold">End Time</label>
+                    <input asp-for="EndTime" type="time" class="form-control" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Schedule</button>
+                <a href="/DoctorSchedules?doctorId=@Model.DoctorId" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
