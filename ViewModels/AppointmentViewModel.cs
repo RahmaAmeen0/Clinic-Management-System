@@ -16,8 +16,7 @@ namespace ClinicManagementSystem.ViewModels
         //علشان نخزن فيها الملاحظات الى جاية من ال user
         [StringLength(500, ErrorMessage = "Notes cannot exceed 500 characters.")]
         public string Notes { get; set; }
-        //علشان لو مسجل قبل كدة منعرضلوش يسجل كل البيانات تانى
-        public bool IsNewPatient { get; set; }
+       
 
         //patient
         [Required(ErrorMessage = "First name is required.")]

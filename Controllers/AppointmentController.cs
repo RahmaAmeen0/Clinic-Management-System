@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ClinicManagementSystem.Controllers
 {
-    public class AppointmentController : Controller 
+    public class AppointmentController : Controller
     {
         private readonly IPatientRepository _patientRepo;
         private readonly IDepartmentRepository _departmentRepo;
@@ -23,6 +23,32 @@ namespace ClinicManagementSystem.Controllers
             _doctorRepo = doctorRepo;
             _scheduleRepo = scheduleRepo;
         }
-        
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            AppointmentViewModel appointmentViewModel = new AppointmentViewModel();
+            var departments =  await _departmentRepo.GetAllAsync();
+            appointmentViewModel.DepartmentsList = departments.Select(d => new SelectListItem
+            {
+                Text = d.Type,
+                Value=d.Id.ToString()
+            }
+            ).ToList();
+            var doctors = await _doctorRepo.GetAllAsync();
+            appointmentViewModel.DoctorsList = doctors.Select(d => new SelectListItem
+            {
+                Text = $"Dr. {d.FirstName} {d.LastName}",
+                Value = d.Id.ToString()
+            }).ToList();
+            var doctorSchdule = await _scheduleRepo.GetAllAsync();
+            appointmentViewModel.SchedulesList = doctorSchdule.Select(s => new SelectListItem
+            {
+                Text = $"{s.WorkDay} ({s.StartTime} - {s.EndTime})",
+                Value = s.Id.ToString()
+            }).ToList();
+            return View (appointmentViewModel);
+        }
+
+
     }
 }
