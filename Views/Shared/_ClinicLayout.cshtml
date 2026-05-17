@@ -50,7 +50,9 @@
                     <ul>
                         <li><a asp-controller="Home" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">Home</a></li>
                         <li><a href="about.html">About</a></li>
-                        <li><a href="departments.html">Departments</a></li>
+                           <li> <a asp-controller="Department" asp-action="Index">
+                                Departments
+                            </a></li>
                         <li><a href="doctors.html">Doctors</a></li>
                         <li><a href="doctor-schedule.html">Doctor-Schedule</a></li>
                         <li><a href="patients.html">Patients</a></li>
@@ -63,7 +65,7 @@
         </div>
     </header>
 
-    <main class="main">
+    <main class="main my-5 py-5">
         @RenderBody()
     </main>
 
