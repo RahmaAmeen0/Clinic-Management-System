@@ -2,6 +2,7 @@
 using ClinicManagementSystem.Models;
 using ClinicManagementSystem.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ClinicManagementSystem.Repositories.ClassRepositories
 {
@@ -28,8 +29,10 @@ namespace ClinicManagementSystem.Repositories.ClassRepositories
             return await _context.DoctorSchedules.Include(s => s.Doctor).ToListAsync();
         }
 
-        public async Task<DoctorSchedule?> GetByIdAsync(int id)
+        public async Task<DoctorSchedule> GetByIdAsync(int? id)
         {
+            if (id == null) return null;
+
             return await _context.DoctorSchedules.Include(s => s.Doctor)
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
