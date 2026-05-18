@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ClinicManagementSystem.ViewModels.DoctorsViewModel>
+
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-primary">Doctors</h2>
+
+    <div class="row">
+
+        @foreach (var doctor in Model)
+        {
+            <div class="col-md-4 mb-4">
+
+                <div class="card shadow border-0">
+
+                    <div class="card-body text-center">
+
+                        <img src="~/images/team/team-1.jpg"
+                             class="rounded-circle mb-3"
+                             width="120" height="120" />
+
+                        <h4>
+                            Dr. @doctor.FirstName @doctor.LastName
+                        </h4>
+
+                        <p class="text-muted">
+                            @doctor.Specialization
+                        </p>
+
+                        <p>
+                            Gender : @doctor.DoctorGender
+                        </p>
+
+                        <p>
+                            Department :
+                            @doctor.DepartmentName
+                        </p>
+
+                        <a href="#" class="btn btn-primary">
+                            View Profile
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

@@ -1,6 +1,10 @@
 using ClinicManagementSystem.Context;
+using ClinicManagementSystem.Models;
 using ClinicManagementSystem.Repositories.ClassRepositories;
 using ClinicManagementSystem.Repositories.IRepositories;
+using ClinicManagementSystem.ViewModels;
+using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +27,18 @@ namespace ClinicManagementSystem
             builder.Services.AddDbContext<ClincDBContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            //adding mapsetr config
+            var config = TypeAdapterConfig.GlobalSettings;
+            // Doctor => DoctorViewModel
+            config.NewConfig<Doctor, DoctorsViewModel>()
+            .Map(dest => dest.DepartmentName,
+         src => src.Department.Description);
+            // Register Mapster Services
+            //builder.Services.AddSingleton(config);
+
+            builder.Services.AddSingleton<IMapper>(new Mapper(config));
+
+            
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
