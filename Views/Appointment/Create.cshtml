@@ -5,9 +5,11 @@
     ViewData["Title"] = "Book Appointment";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 
-<style>
-    .iti { width: 100%; }
-</style>
+    <style>
+        .iti {
+            width: 100%;
+        }
+    </style>
 }
 
 <div class="page-title mt-5 pt-5">
@@ -47,15 +49,15 @@
                         <form asp-action="Create" method="post">
                             <div class="row gy-4">
                                 <div class="col-12 mb-2">
-                            <h5 class="fw-bold mb-3 text-primary">Patient Information</h5>
-                          </div>
+                                    <h5 class="fw-bold mb-3 text-primary">Patient Information</h5>
+                                </div>
 
 
-                             <div class="col-md-12">
-    <label class="form-label fw-bold small text-muted">Phone Number <span class="text-danger">*</span></label>
-    <input asp-for="Phone" id="phone" class="form-control" type="tel" required>
-    <span asp-validation-for="Phone" class="text-danger small"></span>
-</div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold small text-muted">Phone Number <span class="text-danger">*</span></label>
+                                    <input asp-for="Phone" id="phone" class="form-control" type="tel" required>
+                                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                                </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small text-muted">First Name <span class="text-danger">*</span></label>
@@ -71,7 +73,7 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small text-muted">Age <span class="text-danger">*</span></label>
-                                    <input asp-for="Age" class="form-control" placeholder="Age" required>
+                                    <input asp-for="Age" class="form-control" placeholder="Age" min="1" required>
                                     <span asp-validation-for="Age" class="text-danger small"></span>
                                 </div>
 
@@ -96,25 +98,24 @@
                                     <h5 class="fw-bold mb-3 text-primary">Appointment Details</h5>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold small text-muted">Department <span class="text-danger">*</span></label>
-                                    <select asp-for="DepartmentId" asp-items="Model.DepartmentsList" class="form-select" required>
-                                        <option value="">Select Department</option>
-                                    </select>
-                                    <span asp-validation-for="DepartmentId" class="text-danger small"></span>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold small text-muted">Doctor <span class="text-danger">*</span></label>
-                                    <select asp-for="DoctorId" asp-items="Model.DoctorsList" class="form-select" required>
-                                        <option value="">-- Select Doctor --</option>
+                                <div class="form-group">
+                                    <label>Department</label>
+                                    <select asp-for="DepartmentId" asp-items="Model.DepartmentsList" class="form-control" id="DepartmentId">
+                                        <option value="">-- Select Department --</option>
                                     </select>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold small text-muted">Schedule <span class="text-danger">*</span></label>
-                                    <select asp-for="ScheduleId" asp-items="Model.SchedulesList" class="form-select" required>
-                                        <option value="">-- Select Schedule --</option>
+                                <div class="form-group">
+                                    <label>Doctor</label>
+                                    <select asp-for="DoctorId" asp-items="Model.DoctorsList" class="form-control" id="DoctorId">
+                                        <option value="">-- Please select a department first --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Available Schedules</label>
+                                    <select asp-for="ScheduleId" asp-items="Model.SchedulesList" class="form-control" id="ScheduleId">
+                                        <option value="">-- Please select a doctor first --</option>
                                     </select>
                                 </div>
 
@@ -140,6 +141,7 @@
 
                             </div>
                         </form>
+                        <div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
                     </div>
                 </div>
             </div>
@@ -149,22 +151,87 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const phoneInputField = document.querySelector("#phone");
-        
+
         // تشغيل المكتبة
         const phoneInput = window.intlTelInput(phoneInputField, {
-            initialCountry: "eg", // خلينا مصر هي الافتراضي
-            preferredCountries: ["eg", "sa", "ae", "kw", "qa"], // دول الخليج ومصر يظهروا في أول القائمة
+            initialCountry: "eg",
+            preferredCountries: ["eg", "sa", "ae", "kw", "qa"],
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
         });
 
-        // الحركة دي مهمة: قبل ما الفورم تتبعت، بناخد الرقم المدمج (الكود + الرقم) ونحطه في الخانة
         const form = document.querySelector("form");
-        form.addEventListener("submit", function() {
+        form.addEventListener("submit", function(e) {
             if (phoneInputField.value.trim() !== "") {
-                phoneInputField.value = phoneInput.getNumber(); 
+                // بنختبر لو الرقم مطابق فعلاً لقواعد الدولة المكتوبة
+                if (phoneInput.isValidNumber()) {
+                    // لو صح، بنحول الرقم للصيغة الدولية ونحطه في الخانة عشان يتبعت للداتا بيز
+                    phoneInputField.value = phoneInput.getNumber();
+                } else {
+                    // لو غلط، بنوقف الحجز فوراً ونبه المستخدم
+                    e.preventDefault();
+                    alert("Please enter a valid international phone number!");
+                }
             }
         });
     });
 </script>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+
+            // ==========================================
+            // 1. Monitor Department change to filter Doctors
+            // ==========================================
+            $('#DepartmentId').change(function() {
+                var selectedDeptId = $(this).val();
+                var doctorSelect = $('#DoctorId');
+                var scheduleSelect = $('#ScheduleId');
+
+                doctorSelect.empty().append('<option value="">-- Please select a department first --</option>');
+                scheduleSelect.empty().append('<option value="">-- Please select a doctor first --</option>');
+
+                if (selectedDeptId) {
+                    doctorSelect.empty().append('<option value="">-- Loading doctors... --</option>');
+
+                    $.getJSON('/Appointment/GetDoctorsByDepartment', { departmentId: selectedDeptId }, function(data) {
+                        doctorSelect.empty().append('<option value="">-- Select Doctor --</option>');
+                        $.each(data, function(index, item) {
+                            doctorSelect.append('<option value="' + item.id + '">' + item.text + '</option>');
+                        });
+                    });
+                }
+            });
+
+            // ==========================================
+            // 2. Monitor Doctor change to filter Schedules
+            // ==========================================
+            $('#DoctorId').change(function() {
+                var selectedDoctorId = $(this).val();
+                var scheduleSelect = $('#ScheduleId');
+
+                scheduleSelect.empty().append('<option value="">-- Please select a doctor first --</option>');
+
+                if (selectedDoctorId) {
+                    scheduleSelect.empty().append('<option value="">-- Loading available schedules... --</option>');
+
+                    $.getJSON('/Appointment/GetSchedulesByDoctor', { doctorId: selectedDoctorId }, function(data) {
+                        scheduleSelect.empty().append('<option value="">-- Select Available Schedule --</option>');
+                        $.each(data, function(index, item) {
+                            scheduleSelect.append('<option value="' + item.id + '">' + item.text + '</option>');
+                        });
+                    });
+                }
+            });
+
+        });
+    </script>
+}

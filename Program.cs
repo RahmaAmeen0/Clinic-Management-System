@@ -28,6 +28,9 @@ namespace ClinicManagementSystem
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
             builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>();
             builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            builder.Services.AddScoped<IDoctorAddressRepository, DoctorAddressRepository>();
+            builder.Services.AddScoped<IDoctorPhonesRepository, DoctorPhonesRepository>();
+            builder.Services.AddScoped<IPatientAddressesRepository, PatientAddressesRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

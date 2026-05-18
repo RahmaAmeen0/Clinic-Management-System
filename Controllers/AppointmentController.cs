@@ -13,42 +13,113 @@ namespace ClinicManagementSystem.Controllers
         private readonly IAppointmentRepository _appointmentRepo;
         private readonly IDoctorRepository _doctorRepo;
         private readonly IDoctorScheduleRepository _scheduleRepo;
+        private readonly IPatientAddressesRepository _patientAddressRepo;
         public AppointmentController(IPatientRepository patientRepo,
             IDepartmentRepository departmentRepo, IAppointmentRepository appointmentRepo,
-            IDoctorRepository doctorRepo, IDoctorScheduleRepository scheduleRepo)
+            IDoctorRepository doctorRepo, IDoctorScheduleRepository scheduleRepo, IPatientAddressesRepository patientAddressRepo)
         {
             _patientRepo = patientRepo;
             _departmentRepo = departmentRepo;
             _appointmentRepo = appointmentRepo;
             _doctorRepo = doctorRepo;
             _scheduleRepo = scheduleRepo;
+            _patientAddressRepo = patientAddressRepo;
         }
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            AppointmentViewModel appointmentViewModel = new AppointmentViewModel();
-            var departments =  await _departmentRepo.GetAllAsync();
-            appointmentViewModel.DepartmentsList = departments.Select(d => new SelectListItem
-            {
-                Text = d.Type,
-                Value=d.Id.ToString()
-            }
-            ).ToList();
-            var doctors = await _doctorRepo.GetAllAsync();
-            appointmentViewModel.DoctorsList = doctors.Select(d => new SelectListItem
-            {
-                Text = $"Dr. {d.FirstName} {d.LastName}",
-                Value = d.Id.ToString()
-            }).ToList();
-            var doctorSchdule = await _scheduleRepo.GetAllAsync();
-            appointmentViewModel.SchedulesList = doctorSchdule.Select(s => new SelectListItem
-            {
-                Text = $"{s.WorkDay} ({s.StartTime} - {s.EndTime})",
-                Value = s.Id.ToString()
-            }).ToList();
-            return View (appointmentViewModel);
+            AppointmentViewModel appointmentVM = new AppointmentViewModel();
+
+            // 1. بنشحن الأقسام فقط من الداتا بيز
+            appointmentVM.DepartmentsList = (await _departmentRepo.GetAllAsync())
+                                            .Select(d => new SelectListItem { Text = d.Type, Value = d.Id.ToString() })
+                                            .ToList();
+
+            // 2. الدكاترة والمواعيد بينزلوا لستة فاضية تماماً في الأول
+            appointmentVM.DoctorsList = new List<SelectListItem>();
+            appointmentVM.SchedulesList = new List<SelectListItem>();
+
+            return View(appointmentVM);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(AppointmentViewModel appointmentVM)
+        {
+            //لو البيانات مش صح فا لازم يعرض القوائم تانى
+            if (!ModelState.IsValid)
+            {
+                appointmentVM.DepartmentsList = (await _departmentRepo.GetAllAsync()).Select(d => new SelectListItem { Text = d.Type, Value = d.Id.ToString() }).ToList();
+                appointmentVM.DoctorsList = (await _doctorRepo.GetAllAsync()).Select(d => new SelectListItem { Text = $"Dr. {d.FirstName} {d.LastName}", Value = d.DoctorId.ToString() }).ToList();
+                appointmentVM.SchedulesList = (await _scheduleRepo.GetAllAsync()).Select(s => new SelectListItem { Text = $"{s.WorkDay} ({s.StartTime} - {s.EndTime})", Value = s.Id.ToString() }).ToList();
 
+                return View(appointmentVM);
+            }
+
+            Patient patient = new Patient
+            {
+                FirstName = appointmentVM.FirstName,
+                LastName = appointmentVM.LastName,
+                Age = appointmentVM.Age,
+                Phone = appointmentVM.Phone,
+                Gender = appointmentVM.Gender
+            };
+
+            await _patientRepo.AddAsync(patient);
+            await _patientRepo.SaveChangesAsync(); // الداتا بيز هتديله Id دلوقتي
+
+            PatientAddresses patientAddress = new PatientAddresses
+            {
+                PatientId = patient.Id, // بنربط العنوان بـ Id المريض اللي لسه طالع
+                Address = appointmentVM.Address
+            };
+
+            await _patientAddressRepo.AddAsync(patientAddress);
+            await _patientAddressRepo.SaveChangesAsync(); // بنحفظ العنوان في جدوله
+
+            Appointment appointment = new Appointment
+            {
+                PatientId = patient.Id,
+                ScheduleId = appointmentVM.ScheduleId,
+
+                VisitType = appointmentVM.VisitType,
+                Notes = appointmentVM.Notes,
+                //خلينا قيمه افراضيه يفضل الحالة انتظار لحد ما الادمن يعدل من لوحة التحكم انه خلاص اتقبل
+                Status = "Pending",
+                //علشان الوقت والتاريخ يتسجلوا تلقائى فى الداتا بيز
+                Date = DateTime.Now.Date,
+                Time = DateTime.Now.TimeOfDay
+            };
+
+            await _appointmentRepo.AddAsync(appointment);
+            await _appointmentRepo.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetSchedulesByDoctor(int doctorId)
+        {
+            // بنجيب كل المواعيد ونفلترها برقم الدكتور اللي المريض اختاره
+            var schedules = (await _scheduleRepo.GetAllAsync())
+                            .Where(s => s.DoctorId == doctorId)
+                            .Select(s => new {
+                                id = s.Id,
+                                text = $"{s.WorkDay} ({s.StartTime:hh\\:mm} - {s.EndTime:hh\\:mm})"
+                            });
+
+            return Json(schedules); // بنرجعها كـ JSON عشان الـ JavaScript يفهمها
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetDoctorsByDepartment(int departmentId)
+        {
+            var doctors = (await _doctorRepo.GetAllAsync())
+                          .Where(d => d.DepartmentId == departmentId)
+                          .Select(d => new {
+                              id = d.DoctorId, // الـ Primary Key الجديد بتاع الدكتور
+                              text = $"Dr. {d.FirstName} {d.LastName}"
+                          });
+
+            return Json(doctors);
+        }
     }
 }
