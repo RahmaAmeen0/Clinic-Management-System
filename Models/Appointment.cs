@@ -7,6 +7,7 @@
         public TimeSpan Time { get; set; }
         public string Status { get; set; }
         public string VisitType { get; set; }
+        public string ?Notes { get; set; }
 
         public int PatientId { get; set; }
         public Patient Patient { get; set; }

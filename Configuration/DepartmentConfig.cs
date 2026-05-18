@@ -18,16 +18,10 @@ namespace ClinicManagementSystem.Configuration
                    .HasMaxLength(500);
 
             builder.HasData(
-                new Department 
-                { Id = 1,
-                  Type = "General Medicine", 
-                   Description = "Main Clinic"
-                },
-                new Department 
-                { Id = 2, 
-                  Type = "Surgery", 
-                  Description = "Surgical Dept" 
-                }
+                new Department { Id = 1, Type = "General Medicine", Description = "Main Clinic" },
+                new Department { Id = 2, Type = "Surgery", Description = "Surgical Dept" },
+                new Department { Id = 3, Type = "Pediatrics", Description = "Children's Health Clinic" },
+                new Department { Id = 4, Type = "Dentistry", Description = "Dental Care Clinic" }
             );
         }
     }

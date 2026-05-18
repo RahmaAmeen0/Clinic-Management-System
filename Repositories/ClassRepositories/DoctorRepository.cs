@@ -31,7 +31,7 @@ namespace ClinicManagementSystem.Repositories.ClassRepositories
         public async Task<Doctor?> GetByIdAsync(int id)
         {
           return  await _context.Doctors.Include(d=>d.Department).Include(d=>d.DoctorAddresses).
-                Include(d=>d.DoctorPhones).FirstOrDefaultAsync(d=>d.Id==id);
+                Include(d=>d.DoctorPhones).FirstOrDefaultAsync(d=>d.DoctorId==id);
         }
 
         public async Task<bool> SaveChangesAsync()
