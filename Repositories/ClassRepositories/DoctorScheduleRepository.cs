@@ -23,10 +23,13 @@ namespace ClinicManagementSystem.Repositories.ClassRepositories
         {
             _context.DoctorSchedules.Remove(doctorSchedule);
         }
-
         public async Task<IEnumerable<DoctorSchedule>> GetAllAsync()
         {
-            return await _context.DoctorSchedules.Include(s => s.Doctor).ToListAsync();
+            return await _context.DoctorSchedules
+                .Include(s => s.Doctor)
+                    .ThenInclude(d => d.Department)
+                .Include(s => s.Appointments)
+                .ToListAsync();
         }
 
         public async Task<DoctorSchedule> GetByIdAsync(int? id)

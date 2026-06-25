@@ -1,0 +1,174 @@
+﻿@model IEnumerable<ClinicManagementSystem.ViewModels.ScheduleItemViewModel>
+
+<style>
+    .schedule-card {
+        transition: 0.3s ease;
+    }
+
+        .schedule-card:hover {
+            transform: translateY(-6px);
+        }
+</style>
+
+<div class="container py-5">
+
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h2 class="text-primary fw-bold display-6">
+            🏥 Find a Doctor & Book Appointment
+        </h2>
+        <p class="text-muted fs-5">
+            Select a department and doctor to view available appointments
+        </p>
+    </div>
+
+    <!-- Filters -->
+    <div class="card border-0 shadow-lg rounded-4 p-4 mb-5 bg-light">
+
+        <form method="get" action="/DoctorSchedules/PatientView" class="row g-3">
+
+            <!-- Department -->
+            <div class="col-md-5">
+                <label class="form-label fw-bold text-secondary">Department</label>
+
+                <select name="departmentId"
+                        class="form-select form-select-lg rounded-3"
+                        onchange="this.form.submit()">
+
+                    <option value="">-- All Departments --</option>
+
+                    @if (ViewBag.Departments != null)
+                    {
+                        foreach (var dept in ViewBag.Departments)
+                        {
+                            <option value="@dept.Value" selected="@dept.Selected">
+                                @dept.Text
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Doctor -->
+            <div class="col-md-5">
+                <label class="form-label fw-bold text-secondary">Doctor</label>
+
+                <select name="doctorId"
+                        class="form-select form-select-lg rounded-3"
+                        onchange="this.form.submit()">
+
+                    <option value="">-- All Doctors --</option>
+
+                    @if (ViewBag.Doctors != null)
+                    {
+                        foreach (var doc in ViewBag.Doctors)
+                        {
+                            <option value="@doc.Value" selected="@doc.Selected">
+                                @doc.Text
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Reset -->
+            <div class="col-md-2 d-flex align-items-end">
+                <a href="/DoctorSchedules/PatientView"
+                   class="btn btn-outline-secondary btn-lg w-100 rounded-3">
+                    Reset
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Title -->
+    <h4 class="mb-4 text-secondary fw-bold">
+        Available Appointments (@Model.Count())
+    </h4>
+
+    <!-- Empty State -->
+    @if (!Model.Any())
+    {
+        <div class="text-center p-5 bg-light rounded-4 shadow-sm">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png"
+                 width="120"
+                 class="mb-3" />
+
+            <h4 class="text-warning fw-bold">
+                No Available Appointments
+            </h4>
+
+            <p class="text-muted">
+                Try selecting another doctor or department.
+            </p>
+
+        </div>
+    }
+    else
+    {
+        <div class="row">
+
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+
+                    <div class="card schedule-card h-100 shadow-lg border-0 rounded-4 overflow-hidden">
+
+                        <div class="card-body p-4">
+
+                            <!-- Doctor Image -->
+                            <div class="text-center mb-3">
+                                <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png"
+                                     width="80"
+                                     class="rounded-circle border shadow-sm"
+                                     onerror="this.src='https://cdn-icons-png.flaticon.com/512/3774/3774299.png'" />
+                            </div>
+
+                            <!-- Doctor Name -->
+                            <h5 class="text-primary fw-bold text-center mb-2">
+                                @item.DoctorName
+                            </h5>
+
+                            <!-- Specialization -->
+                            <p class="text-muted text-center small mb-4">
+                                <i class="bi bi-tag-fill"></i>
+                                @item.Specialization
+                            </p>
+
+                            <hr />
+
+                            <!-- Day -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-secondary fw-semibold">Day</span>
+                                <span class="badge bg-primary-subtle text-primary border rounded-pill p-2">
+                                    @item.WorkDay
+                                </span>
+                            </div>
+
+                            <!-- Time -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <span class="text-secondary fw-semibold">Time</span>
+                                <span class="badge bg-dark-subtle text-dark rounded-pill p-2">
+                                    ⏰ @item.StartTimeFormatted - @item.EndTimeFormatted
+                                </span>
+                            </div>
+
+                            <!-- Button -->
+                            <a href="/Appointment/Create?scheduleId=@item.ScheduleId"
+                               class="btn btn-primary w-100 rounded-pill py-2 fw-semibold">
+                                📅 Book Appointment
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    }
+
+</div>
