@@ -9,6 +9,7 @@ namespace ClinicManagementSystem.ViewModels
         public string LastName { get; set; }= string.Empty;
         public string Specialization { get; set; } = string.Empty;
         public string DoctorGender { get; set; } = string.Empty;
+        public string? image { get; set; }
 
         public int DepartmentId { get; set; }
         public string DepartmentName { get; set; }

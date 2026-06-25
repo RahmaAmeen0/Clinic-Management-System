@@ -54,13 +54,11 @@
                                 Departments
                             </a></li>
 
-                        <li>
-                            <a asp-controller="Doctors" asp-action="Index">
-                                Doctors
-                            </a>
-                        </li>
-                      @*   <li><a asp-controller="Doctors" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctors" ? "active" : "")">Doctors</a></li> *@
-                        <li><a asp-controller="DoctorSchedules" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctors" ? "active" : "")">Doctor-Schedule</a></li>                        <li><a href="patients.html">Patients</a></li>
+                        <li><a asp-controller="Doctors" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctors" ? "active" : "")">Doctors</a></li>      
+
+                      @* <li><a asp-controller="Doctors" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctors" ? "active" : "")">Doctors</a></li> *@
+                        <li><a asp-controller="DoctorSchedules" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "DoctorSchedules" ? "active" : "")">Doctor-Schedule</a></li>
+                        <li><a href="patients.html">Patients</a></li>
                         <li><a asp-controller="Appointment" asp-action="Create" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Appointment" ? "active" : "")">Appointment</a></li>
                         <li><a href="contact.html">Contact</a></li>
                     </ul>

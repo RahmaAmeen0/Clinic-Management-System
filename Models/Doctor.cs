@@ -7,6 +7,7 @@
         public string LastName { get; set; }
         public string Specialization { get; set; }
         public string DoctorGender { get; set; }
+        public string ? image { get; set; }
 
         public int DepartmentId { get; set; }
         public Department Department { get; set; }
