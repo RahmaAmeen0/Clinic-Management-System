@@ -14,6 +14,7 @@ namespace ClinicManagementSystem.Controllers
         private readonly IDoctorRepository _doctorRepo;
         private readonly IDoctorScheduleRepository _scheduleRepo;
         private readonly IPatientAddressesRepository _patientAddressRepo;
+
         public AppointmentController(IPatientRepository patientRepo,
             IDepartmentRepository departmentRepo, IAppointmentRepository appointmentRepo,
             IDoctorRepository doctorRepo, IDoctorScheduleRepository scheduleRepo, IPatientAddressesRepository patientAddressRepo)
@@ -25,8 +26,7 @@ namespace ClinicManagementSystem.Controllers
             _scheduleRepo = scheduleRepo;
             _patientAddressRepo = patientAddressRepo;
         }
-        [HttpGet]
-        [HttpGet]
+
         [HttpGet]
         public async Task<IActionResult> Create(int? scheduleId, int? departmentId, int? doctorId)
         {
@@ -140,8 +140,10 @@ namespace ClinicManagementSystem.Controllers
             await _appointmentRepo.AddAsync(appointment);
             await _appointmentRepo.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Home");
+            // السطر اللي هيشغل إشعار الـ SweetAlert
+            return Redirect("/Home/Index?booked=true");
         }
+
         [HttpGet]
         public async Task<JsonResult> GetSchedulesByDoctor(int doctorId)
         {
@@ -155,6 +157,7 @@ namespace ClinicManagementSystem.Controllers
 
             return Json(schedules); // بنرجعها كـ JSON عشان الـ JavaScript يفهمها
         }
+
         [HttpGet]
         public async Task<JsonResult> GetDoctorsByDepartment(int departmentId)
         {
