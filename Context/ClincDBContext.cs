@@ -25,5 +25,6 @@ namespace ClinicManagementSystem.Context
         public virtual DbSet<DoctorPhones> DoctorPhones { get; set; }
         public virtual DbSet<DoctorAddress> DoctorAddresses { get; set; }
         public virtual DbSet<PatientAddresses> PatientAddresses { get; set; }
+        public virtual DbSet<ContactMessage> ContactMessages { get; set; }
     }
 }

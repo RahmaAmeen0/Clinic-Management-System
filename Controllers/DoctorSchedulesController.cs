@@ -163,10 +163,8 @@ namespace ClinicManagementSystem.Controllers
         {
             var allSchedules = await _scheduleRepo.GetAllAsync();
 
-            var filteredSchedules = allSchedules
-                .Where(s => s.Appointments == null || !s.Appointments.Any())
-                .AsQueryable();
-
+            // كده كل المواعيد المتاحة هتتعرض عادي جداً
+            var filteredSchedules = allSchedules.AsQueryable();
 
             if (departmentId.HasValue)
             {
@@ -211,7 +209,9 @@ namespace ClinicManagementSystem.Controllers
                 StartTimeFormatted = DateTime.Today.Add(s.StartTime).ToString("hh:mm tt"),
                 EndTimeFormatted = DateTime.Today.Add(s.EndTime).ToString("hh:mm tt"),
                 DoctorName = s.Doctor != null ? $"Dr. {s.Doctor.FirstName} {s.Doctor.LastName}" : "Doctor Available",
-                Specialization = s.Doctor != null ? s.Doctor.Specialization : "Clinic Specialist"
+                Specialization = s.Doctor != null ? s.Doctor.Specialization : "Clinic Specialist",
+                //  السطر الجديد اللي هيسحب الصورة من الداتا بيز ويبعتها للصفحة
+                  DoctorImage = s.Doctor != null ? s.Doctor.image : null
             }).ToList();
 
             return View(viewModel);

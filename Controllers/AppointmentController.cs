@@ -26,18 +26,64 @@ namespace ClinicManagementSystem.Controllers
             _patientAddressRepo = patientAddressRepo;
         }
         [HttpGet]
-        public async Task<IActionResult> Create()
+        [HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> Create(int? scheduleId, int? departmentId, int? doctorId)
         {
             AppointmentViewModel appointmentVM = new AppointmentViewModel();
 
-            // 1. بنشحن الأقسام فقط من الداتا بيز
-            appointmentVM.DepartmentsList = (await _departmentRepo.GetAllAsync())
+            // 1. شحن الأقسام دايماً
+            var allDepartments = await _departmentRepo.GetAllAsync();
+            appointmentVM.DepartmentsList = allDepartments
                                             .Select(d => new SelectListItem { Text = d.Type, Value = d.Id.ToString() })
                                             .ToList();
 
-            // 2. الدكاترة والمواعيد بينزلوا لستة فاضية تماماً في الأول
             appointmentVM.DoctorsList = new List<SelectListItem>();
             appointmentVM.SchedulesList = new List<SelectListItem>();
+
+            // 2. لو جاي من صفحة المواعيد (معاه ScheduleId)
+            if (scheduleId.HasValue)
+            {
+                var schedule = await _scheduleRepo.GetByIdAsync(scheduleId.Value);
+                if (schedule != null)
+                {
+                    doctorId = schedule.DoctorId; // بنخلي الـ doctorId ياخد قيمته من الميعاد عشان يكمل في اللوجيك اللي تحت
+                    appointmentVM.ScheduleId = schedule.Id;
+                }
+            }
+
+            // 3. لو جاي من صفحة الدكاترة أو المواعيد (معاه DoctorId)
+            if (doctorId.HasValue)
+            {
+                var doctor = await _doctorRepo.GetByIdAsync(doctorId.Value);
+                if (doctor != null)
+                {
+                    appointmentVM.DoctorId = doctor.DoctorId;
+                    appointmentVM.DepartmentId = doctor.DepartmentId;
+
+                    // نملى قائمة الدكاترة بنفس قسم الدكتور ده
+                    var departmentDoctors = (await _doctorRepo.GetAllAsync()).Where(d => d.DepartmentId == doctor.DepartmentId);
+                    appointmentVM.DoctorsList = departmentDoctors
+                        .Select(d => new SelectListItem { Text = $"Dr. {d.FirstName} {d.LastName}", Value = d.DoctorId.ToString() })
+                        .ToList();
+
+                    // نملى قائمة المواعيد الخاصة بالدكتور ده بنظام 12 ساعة
+                    var doctorSchedules = (await _scheduleRepo.GetAllAsync()).Where(s => s.DoctorId == doctor.DoctorId);
+                    appointmentVM.SchedulesList = doctorSchedules
+                        .Select(s => new SelectListItem { Text = $"{s.WorkDay} ({DateTime.Today.Add(s.StartTime).ToString("hh:mm tt")} - {DateTime.Today.Add(s.EndTime).ToString("hh:mm tt")})", Value = s.Id.ToString() })
+                        .ToList();
+                }
+            }
+            // 4. لو جاي من صفحة الأقسام (معاه DepartmentId بس)
+            else if (departmentId.HasValue)
+            {
+                appointmentVM.DepartmentId = departmentId.Value;
+
+                var departmentDoctors = (await _doctorRepo.GetAllAsync()).Where(d => d.DepartmentId == departmentId.Value);
+                appointmentVM.DoctorsList = departmentDoctors
+                    .Select(d => new SelectListItem { Text = $"Dr. {d.FirstName} {d.LastName}", Value = d.DoctorId.ToString() })
+                    .ToList();
+            }
 
             return View(appointmentVM);
         }

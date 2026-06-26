@@ -8,5 +8,7 @@
         public string EndTimeFormatted { get; set; } = string.Empty;
         public string DoctorName { get; set; }
         public string Specialization { get; set; }
+        //edit to show doctor image
+        public string? DoctorImage { get; set; }
     }
 }

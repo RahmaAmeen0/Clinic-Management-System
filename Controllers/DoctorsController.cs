@@ -19,15 +19,20 @@ namespace ClinicManagementSystem.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<IActionResult>Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(int? departmentId)
         {
-            var Resualt = await _repository.GetAllAsync();
-            var doctore=Resualt.ToList();
-            var Response = _mapper.Map<List<DoctorsViewModel>>(doctore);
+            var result = await _repository.GetAllAsync();
+            var doctors = result.ToList();
 
+            if (departmentId.HasValue)
+            {
+                doctors = doctors.Where(d => d.DepartmentId == departmentId.Value).ToList();
+            }
 
-            return View(Response);
+            var response = _mapper.Map<List<DoctorsViewModel>>(doctors);
 
+            return View(response);
         }
     }
 }

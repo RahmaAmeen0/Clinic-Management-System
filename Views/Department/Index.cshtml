@@ -12,9 +12,9 @@
             <div class="container">
                 <div class="row d-flex justify-content-center text-center">
                     <div class="col-lg-8">
-                        <h1 class="heading-title">Departments</h1>
-                        <p class="mb-0">
-                            Our medical departments provide high quality healthcare services.
+                        <h1 class="heading-title">Our Departments</h1>
+                        <p class="mb-0 text-muted">
+                            Explore our specialized medical departments providing high-quality healthcare services tailored to your needs.
                         </p>
                     </div>
                 </div>
@@ -24,49 +24,66 @@
 
     <!-- Departments Section -->
     <section id="departments" class="departments section">
-
         <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="row g-5">
+            <div class="row g-4">
 
                 @foreach (var item in Model)
                 {
+                    // السحر هنا: تحديد الأيقونة واللون بناءً على رقم القسم
+                    string iconClass = item.Id switch
+                    {
+                        1 => "fas fa-stethoscope text-primary",    // الباطنة (سماعة)
+                        2 => "fas fa-procedures text-danger",      // الجراحة (سرير عمليات)
+                        3 => "fas fa-baby text-info",              // الأطفال (طفل)
+                        4 => "fas fa-tooth text-secondary",        // الأسنان (ضرس)
+                        5 => "fas fa-baby-carriage text-warning",  // النساء والتوليد (عربة أطفال)
+                        6 => "fas fa-bone text-success",           // العظام (عظمة)
+                        _ => "fas fa-heartbeat text-primary"       // أي قسم جديد ياخد نبض القلب
+                    };
+
                     <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm border-0 department-card" style="transition: transform 0.3s ease;">
 
-                        <div class="department-card">
+                            <div class="card-body text-center p-4 d-flex flex-column">
 
-                            <div class="department-icon">
-                                <i class="fas fa-heartbeat"></i>
+                                <!-- الأيقونة المتغيرة -->
+                                <div class="department-icon mb-4" style="font-size: 3.5rem;">
+                                    <i class="@iconClass"></i>
+                                </div>
+
+                                <div class="department-content flex-grow-1">
+                                    <h3 class="card-title fw-bold text-dark mb-3">@item.Type</h3>
+                                    <p class="card-text text-muted mb-4" style="min-height: 60px;">
+                                        @item.Description
+                                    </p>
+                                </div>
+
+                                <!-- أزرار التوجيه (بتفلتر الدكاترة والمواعيد برقم القسم) -->
+                                <div class="mt-4 text-center">
+                                    <a asp-controller="Doctors"
+                                       asp-action="Index"
+                                       asp-route-departmentId="@item.Id"
+                                       class="btn btn-outline-primary rounded-pill px-4 py-2 w-100 fw-bold">
+                                        <i class="fas fa-user-md me-2"></i> View Doctors
+                                    </a>
+                                </div>
                             </div>
-
-                            <div class="department-content">
-
-                                <h3>@item.Type</h3>
-
-                                <p>
-                                    @item.Description
-                                </p>
-
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="learn-more">
-
-                                    <span>Learn More</span>
-                                    <i class="fas fa-arrow-right"></i>
-
-                                </a>
-
-                            </div>
-
                         </div>
-
                     </div>
                 }
 
             </div>
-
         </div>
-
     </section>
 
 </main>
+
+<!-- ستايل بسيط عشان الكروت تنور لما تقف عليها بالماوس -->
+@section Scripts {
+    <style>
+        .department-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+    </style>
+}

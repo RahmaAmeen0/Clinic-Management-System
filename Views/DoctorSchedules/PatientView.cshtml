@@ -117,12 +117,14 @@
                     <div class="card schedule-card h-100 shadow-lg border-0 rounded-4 overflow-hidden">
 
                         <div class="card-body p-4">
-
                             <!-- Doctor Image -->
                             <div class="text-center mb-3">
-                                <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png"
-                                     width="80"
+                                <!-- هنا استخدمنا DoctorImage اللي لسه ضايفينها -->
+                                <img src="~/assets/img/Doctors/@item.DoctorImage"
+                                     width="200" height="200"
+                                     style="object-fit: cover;"
                                      class="rounded-circle border shadow-sm"
+                                     alt="Doctor Image"
                                      onerror="this.src='https://cdn-icons-png.flaticon.com/512/3774/3774299.png'" />
                             </div>
 
@@ -155,11 +157,12 @@
                                 </span>
                             </div>
 
-                            <!-- Button -->
-                            <a href="/Appointment/Create?scheduleId=@item.ScheduleId"
-                               class="btn btn-primary w-100 rounded-pill py-2 fw-semibold">
-                                📅 Book Appointment
-                            </a>
+                           <a asp-controller="Appointment" 
+   asp-action="Create" 
+   asp-route-scheduleId="@item.ScheduleId"
+   class="btn btn-primary w-100 rounded-pill py-2 fw-semibold shadow-sm mt-3">
+    📅 Book Appointment
+</a>
 
                         </div>
                     </div>

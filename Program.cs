@@ -58,6 +58,7 @@ namespace ClinicManagementSystem
             }
             app.UseStaticFiles();
             app.UseHttpsRedirection();
+            app.UseStatusCodePagesWithReExecute("/Home/Error404");
             app.UseRouting();
 
 

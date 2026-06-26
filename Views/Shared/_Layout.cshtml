@@ -37,14 +37,70 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - ClinicManagementSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer id="footer" class="footer-16 footer position-relative bg-light pt-5 mt-5 border-top">
+        <div class="container pb-4">
+            <div class="row align-items-start g-4">
+                <div class="col-lg-5">
+                    <div class="brand-section">
+                        <a asp-controller="Home" asp-action="Index" class="logo d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="fas fa-heartbeat fs-2 text-primary me-2"></i>
+                            <span class="sitename fs-3 fw-bold text-dark">MedSteps Clinic</span>
+                        </a>
+                        <p class="text-muted pe-4">Providing world-class medical care with advanced technology and a compassionate approach to healing.</p>
+                        <div class="contact-info mt-4">
+                            <p class="text-muted mb-2"><i class="bi bi-geo-alt text-primary me-2"></i> 123 MedSteps Avenue, Obour City, Egypt</p>
+                            <p class="text-muted mb-2"><i class="bi bi-telephone text-primary me-2"></i> +1 (555) 987-6543</p>
+                            <p class="text-muted mb-0"><i class="bi bi-envelope text-primary me-2"></i> info@medstepsclinic.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="fw-bold text-dark mb-4">Quick Links</h5>
+                    <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                        <li><a asp-controller="Home" asp-action="Index" class="text-muted text-decoration-none hover-primary"><i class="bi bi-chevron-right small me-1"></i> Home</a></li>
+                        <li><a asp-controller="Home" asp-action="About" class="text-muted text-decoration-none hover-primary"><i class="bi bi-chevron-right small me-1"></i> About Us</a></li>
+                        <li><a asp-controller="Department" asp-action="Index" class="text-muted text-decoration-none hover-primary"><i class="bi bi-chevron-right small me-1"></i> Departments</a></li>
+                        <li><a asp-controller="Doctors" asp-action="Index" class="text-muted text-decoration-none hover-primary"><i class="bi bi-chevron-right small me-1"></i> Our Doctors</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact" class="text-muted text-decoration-none hover-primary"><i class="bi bi-chevron-right small me-1"></i> Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold text-dark mb-4">Working Hours</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="d-flex justify-content-between mb-2"><span>Saturday - Thursday</span> <span>9:00 AM - 10:00 PM</span></li>
+                        <li class="d-flex justify-content-between mb-2"><span>Friday</span> <span class="text-primary fw-bold">Emergency Only</span></li>
+                    </ul>
+                    <div class="mt-4">
+                        <a asp-controller="Appointment" asp-action="Create" class="btn btn-primary rounded-pill px-4 py-2 w-100 fw-bold shadow-sm">
+                            <i class="far fa-calendar-check me-2"></i> Book Appointment Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-primary text-white text-center py-3 mt-3">
+            <p class="mb-0 small">&copy; @DateTime.Now.Year <strong>MedSteps Clinic</strong>. All Rights Reserved.</p>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+            icon: 'success',
+            title: 'Excellent!',
+            text: '@TempData["SuccessMessage"]',
+            confirmButtonColor: '#0d6efd',
+            backdrop: `rgba(0,0,123,0.1)`
+            });
+        </script>
+    }
 </body>
 </html>
