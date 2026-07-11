@@ -1,0 +1,249 @@
+﻿@model ClinicManagementSystem.ViewModels.LoginViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MedSteps Clinic</title>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+            .auth-wrapper {
+                min-height: 100vh;
+                display: flex;
+                overflow: hidden;
+            }
+
+            .auth-brand-panel {
+                position: relative;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 4rem 3.5rem;
+                color: #fff;
+                background: linear-gradient(135deg, #06294d 0%, #0b5ea8 55%, #159bd8 100%);
+                overflow: hidden;
+            }
+
+                .auth-brand-panel::before, .auth-brand-panel::after {
+                    content: "";
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.08);
+                }
+
+                .auth-brand-panel::before {
+                    width: 420px;
+                    height: 420px;
+                    top: -140px;
+                    right: -140px;
+                }
+
+                .auth-brand-panel::after {
+                    width: 280px;
+                    height: 280px;
+                    bottom: -100px;
+                    left: -80px;
+                    background: rgba(255, 255, 255, 0.06);
+                }
+
+            .auth-brand-icon {
+                width: 64px;
+                height: 64px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255, 255, 255, 0.15);
+                border-radius: 18px;
+                margin-bottom: 2rem;
+                backdrop-filter: blur(6px);
+            }
+
+            .auth-brand-panel h1 {
+                font-weight: 800;
+                font-size: 2.4rem;
+                line-height: 1.25;
+                position: relative;
+                z-index: 2;
+            }
+
+            .auth-brand-panel p.lead-text {
+                color: rgba(255, 255, 255, 0.85);
+                font-size: 1.05rem;
+                max-width: 420px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .auth-feature-list {
+                list-style: none;
+                padding: 0;
+                margin: 2rem 0 0;
+                position: relative;
+                z-index: 2;
+            }
+
+                .auth-feature-list li {
+                    display: flex;
+                    align-items: center;
+                    gap: .75rem;
+                    margin-bottom: 1rem;
+                    font-weight: 500;
+                }
+
+                    .auth-feature-list li i {
+                        width: 34px;
+                        height: 34px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: rgba(255, 255, 255, 0.18);
+                        border-radius: 50%;
+                        flex-shrink: 0;
+                    }
+
+            .auth-form-panel {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 3rem 2rem;
+                background: #f4f7fa;
+                position: relative;
+            }
+
+            .auth-card {
+                width: 100%;
+                max-width: 420px;
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(14px);
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                border-radius: 24px;
+                padding: 2.75rem;
+                box-shadow: 0 25px 60px rgba(11, 94, 168, 0.15);
+            }
+
+                .auth-card .form-control, .auth-card .input-group-text {
+                    background: #fff;
+                }
+
+                .auth-card .btn-gradient {
+                    background: linear-gradient(135deg, #0b5ea8, #159bd8);
+                    border: none;
+                    color: #fff;
+                    transition: transform .2s ease, box-shadow .2s ease;
+                }
+
+                    .auth-card .btn-gradient:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 12px 25px rgba(11, 94, 168, 0.35);
+                        color: #fff;
+                    }
+
+            @@media (max-width: 991.98px) {
+                .auth-brand-panel {
+                    display: none;
+                }
+
+                .auth-form-panel {
+                    flex: 1 1 100%;
+                }
+            }
+    </style>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-brand-panel">
+            <div class="auth-brand-icon">
+                <i class="bi bi-shield-lock-fill" style="font-size: 1.8rem;"></i>
+            </div>
+            <h1>Welcome Back to MedSteps</h1>
+            <p class="lead-text">Log in to manage your appointments, view your medical history, and connect with our specialists.</p>
+            <ul class="auth-feature-list">
+                <li><i class="bi bi-calendar2-check"></i> Manage appointments easily</li>
+                <li><i class="bi bi-file-earmark-medical"></i> Secure access to your records</li>
+            </ul>
+        </div>
+
+        <div class="auth-form-panel">
+            <div class="auth-card">
+                <div class="text-center mb-4">
+                    <i class="bi bi-box-arrow-in-right text-primary mb-2" style="font-size: 2.6rem;"></i>
+                    <h3 class="fw-bold mb-1">Welcome Back</h3>
+                    <p class="text-muted small mb-0">Please login to your account</p>
+                </div>
+
+                <!-- الربط مع الكنترولر -->
+                <form asp-controller="Account" asp-action="Login" method="post">
+
+                    <!-- عرض أخطاء الدخول (زي الباسورد غلط) -->
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3 fw-bold"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-bold small text-muted">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text rounded-start-pill border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                            <input asp-for="Email" class="form-control rounded-end-pill border-start-0 px-3 py-2" placeholder="name@example.com">
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label fw-bold small text-muted">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text rounded-start-pill border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                            <input asp-for="Password" class="form-control border-start-0 px-3 py-2" placeholder="********" id="passwordInput">
+                            <span class="input-group-text rounded-end-pill border-start-0 toggle-password" role="button" data-target="passwordInput">
+                                <i class="bi bi-eye-slash text-muted"></i>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 small">
+                        <div class="form-check">
+                            <!-- الربط مع خاصية تذكرني -->
+                            <input asp-for="RememberMe" class="form-check-input">
+                            <label asp-for="RememberMe" class="form-check-label text-muted fw-bold">Remember me</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient w-100 rounded-pill py-2 fw-bold mb-3">
+                        Login <i class="bi bi-box-arrow-in-right ms-1"></i>
+                    </button>
+                    <div class="text-center text-muted small">
+                        Don't have an account? <a asp-controller="Account" asp-action="Register" class="fw-bold text-decoration-none">Register here</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            document.querySelectorAll('.toggle-password').forEach(function (el) {
+                el.addEventListener('click', function () {
+                    var input = document.getElementById(this.dataset.target);
+                    var icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.replace('bi-eye-slash', 'bi-eye');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.replace('bi-eye', 'bi-eye-slash');
+                    }
+                });
+            });
+    </script>
+
+    <!-- تشغيل الـ Client-side Validation -->
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>

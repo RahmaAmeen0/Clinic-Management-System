@@ -19,14 +19,21 @@ namespace ClinicManagementSystem
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>().
-                AddEntityFrameworkStores<ClincDBContext>();
+          
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             builder.Services.AddDbContext<ClincDBContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                // 👇 السطرين دول هما اللي هيمنعوه يعمل Login لو مأكدش الكود 👇
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
+            })
+.AddEntityFrameworkStores<ClincDBContext>()
+.AddDefaultTokenProviders();// السطر ده مهم جداً عشان توليد التوكن يشتغل
             //adding mapsetr config
             var config = TypeAdapterConfig.GlobalSettings;
             // Doctor => DoctorViewModel

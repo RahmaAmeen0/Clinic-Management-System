@@ -1,4 +1,8 @@
 ﻿<!DOCTYPE html>
+@using Microsoft.AspNetCore.Identity
+@using ClinicManagementSystem.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -21,9 +25,7 @@
 
     <link href="~/assets/css/main.css" rel="stylesheet">
 
-    <!-- CSS الخاص بتأثير الخط السفلي المتحرك -->
     <style>
-            /* 1. تأثير الخط المتحرك للينكات العادية فقط (واستثناء زرار الحجز) */
             #navmenu ul li a:not(.btn) {
                 position: relative;
                 text-decoration: none;
@@ -46,15 +48,53 @@
                     width: 100%;
                 }
 
-            /* 2. تأثير التكبير (Scale) لزرار الحجز فقط */
             #navmenu ul li a.btn {
-                transition: all 0.3s ease; /* عشان الحركة تكون ناعمة */
+                transition: all 0.3s ease;
             }
 
                 #navmenu ul li a.btn:hover {
-                    transform: scale(1.08); /* بيكبر الزرار بنسبة 8% */
-                    box-shadow: 0 8px 15px rgba(13, 110, 253, 0.4) !important; /* ظل أقوى عشان يبان إنه بارز لبرة */
+                    transform: scale(1.08);
+                    box-shadow: 0 8px 15px rgba(13, 110, 253, 0.4) !important;
                 }
+
+            /* Logout button */
+            .btn-logout-nav {
+                display: flex;
+                align-items: center;
+                gap: .4rem;
+                background: #fff;
+                color: #dc3545;
+                font-weight: 600;
+                font-size: .92rem;
+                padding: .5rem 1rem;
+                border-radius: 50px;
+                border: 1px solid rgba(220, 53, 69, 0.3);
+                text-decoration: none;
+                transition: all 0.25s ease;
+                white-space: nowrap;
+            }
+
+                .btn-logout-nav:hover {
+                    background: #dc3545;
+                    color: #fff;
+                    border-color: #dc3545;
+                    box-shadow: 0 6px 14px rgba(220, 53, 69, 0.3);
+                }
+
+            /* Auth nav-links (Login / Register) */
+            #navmenu .auth-link {
+                display: flex;
+                align-items: center;
+                gap: .35rem;
+                font-weight: 600;
+            }
+
+            @@media (max-width: 1199.98px) {
+                .btn-logout-nav {
+                    width: fit-content;
+                    margin: .3rem 0;
+                }
+            }
     </style>
 </head>
 
@@ -78,8 +118,24 @@
 
         <div class="branding d-flex align-items-center">
             <div class="container position-relative d-flex align-items-center justify-content-between">
-                <a asp-controller="Home" asp-action="Index" class="logo d-flex align-items-center">
-                    <h1 class="sitename">MedSteps Clinic</h1>
+
+                @{
+                    string userFirstName = "";
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        var appUser = await UserManager.GetUserAsync(User);
+                        userFirstName = appUser?.FirstName ?? User.Identity.Name.Split('@')[0];
+                    }
+                }
+
+                <a asp-controller="Home" asp-action="Index" class="logo d-flex flex-column justify-content-center text-decoration-none me-auto">
+                    <h1 class="sitename text-nowrap m-0 lh-1" style="padding-bottom: 2px;">MedSteps Clinic</h1>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <span class="text-primary fw-bold mt-1 d-flex align-items-center gap-1" style="font-size: 0.85rem;">
+                            <i class="bi bi-person-circle"></i> Welcome, @userFirstName
+                        </span>
+                    }
                 </a>
 
                 <nav id="navmenu" class="navmenu">
@@ -89,28 +145,31 @@
                                 <i class="fas fa-home me-1"></i> Home
                             </a>
                         </li>
-                        <li>
-                            <a asp-controller="Department" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Department" ? "active" : "")">
-                                <i class="fas fa-clinic-medical me-1"></i> Departments
-                            </a>
-                        </li>
-                        <li>
-                            <a asp-controller="Doctors" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctors" ? "active" : "")">
-                                <i class="fas fa-user-md me-1"></i> Doctors
-                            </a>
-                        </li>
-                        <li>
-                            <a asp-controller="DoctorSchedules" asp-action="PatientView" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "DoctorSchedules" ? "active" : "")">
-                                <i class="far fa-calendar-alt me-1"></i> Doctor Schedule
-                            </a>
-                        </li>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li>
+                                <a asp-controller="Department" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Department" ? "active" : "")">
+                                    <i class="fas fa-clinic-medical me-1"></i> Departments
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="Doctors" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctors" ? "active" : "")">
+                                    <i class="fas fa-user-md me-1"></i> Doctors
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="DoctorSchedules" asp-action="PatientView" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "DoctorSchedules" ? "active" : "")">
+                                    <i class="far fa-calendar-alt me-1"></i> Doctor Schedule
+                                </a>
+                            </li>
+                        }
 
                         <li>
                             <a asp-controller="Home" asp-action="About" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "About" ? "active" : "")">
                                 <i class="fas fa-info-circle me-1"></i> About
                             </a>
                         </li>
-
                         <li>
                             <a asp-controller="Home" asp-action="Contact" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Contact" ? "active" : "")">
                                 <i class="fas fa-headset me-1"></i> Contact
@@ -118,12 +177,31 @@
                         </li>
 
                         <li class="ms-lg-4 mt-3 mt-lg-0">
-                            <a asp-controller="Appointment" asp-action="Create"
-                               class="btn btn-primary text-white rounded-pill px-4 py-2 fw-bold shadow-sm"
-                               style="transition: 0.3s;">
-                                <i class="far fa-calendar-check me-1"></i> Appointment Now
-                            </a>
+                            <div class="nav-actions d-flex align-items-center gap-3">
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <a asp-controller="Appointment" asp-action="Create" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2" style="background: linear-gradient(135deg, #0b5ea8, #159bd8); border: none; font-size: 0.95rem; transition: 0.3s;">
+                                        <i class="far fa-calendar-check fs-5"></i> Appointment Now
+                                    </a>
+
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2 border-2 shadow-sm" style="font-size: 0.95rem; transition: 0.3s;">
+                                        <i class="bi bi-box-arrow-right fs-5"></i> Logout
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-outline-primary rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2" asp-controller="Account" asp-action="Login" style="border-width: 2px;">
+                                        <i class="bi bi-box-arrow-in-right fs-5"></i> Login
+                                    </a>
+                                    <a class="btn btn-primary rounded-pill px-4 py-2 fw-bold text-white shadow-sm d-flex align-items-center gap-2 ms-2" asp-controller="Account" asp-action="Register" style="background: linear-gradient(135deg, #0b5ea8, #159bd8); border: none;">
+                                        <i class="bi bi-person-plus fs-5"></i> Register
+                                    </a>
+                                }
+
+                            </div>
                         </li>
+
                     </ul>
                     <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
@@ -177,7 +255,6 @@
                                         </nav>
                                     </div>
                                 </div>
-
                                 <div class="col-6 col-lg-3">
                                     <div class="nav-column">
                                         <h6>Services</h6>
@@ -190,7 +267,6 @@
                                         </nav>
                                     </div>
                                 </div>
-
                                 <div class="col-6 col-lg-3">
                                     <div class="nav-column">
                                         <h6>Resources</h6>
@@ -203,7 +279,6 @@
                                         </nav>
                                     </div>
                                 </div>
-
                                 <div class="col-6 col-lg-3">
                                     <div class="nav-column">
                                         <h6>Connect</h6>
@@ -250,11 +325,47 @@
 
     <a href="#!" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center pb-4">
+                    <i class="bi bi-exclamation-circle text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h4 class="fw-bold">Are you sure?</h4>
+                    <p class="text-muted">Do you really want to log out of your account?</p>
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-center pb-4">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                        <button type="submit" class="btn btn-danger rounded-pill px-4">Yes, Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/vendor/aos/aos.js"></script>
     <script src="~/assets/vendor/glightbox/js/glightbox.min.js"></script>
     <script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="~/assets/js/main.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '@TempData["SuccessMessage"]',
+            confirmButtonColor: '#0d6efd'
+            });
+            });
+        </script>
+    }
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

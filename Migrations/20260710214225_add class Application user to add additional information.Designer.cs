@@ -4,6 +4,7 @@ using ClinicManagementSystem.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicManagementSystem.Migrations
 {
     [DbContext(typeof(ClincDBContext))]
-    partial class ClincDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260710214225_add class Application user to add additional information")]
+    partial class addclassApplicationusertoaddadditionalinformation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -586,29 +589,6 @@ namespace ClinicManagementSystem.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "7ca929d2-7ec5-40b9-8137-bc6fa44a56a1",
-                            ConcurrencyStamp = "1",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "8b2345d2-8ec5-41b9-9248-bc6fa44a56b2",
-                            ConcurrencyStamp = "2",
-                            Name = "Doctor",
-                            NormalizedName = "DOCTOR"
-                        },
-                        new
-                        {
-                            Id = "9c3456d3-9ec6-42b9-0359-bc6fa44a56c3",
-                            ConcurrencyStamp = "3",
-                            Name = "Patient",
-                            NormalizedName = "PATIENT"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

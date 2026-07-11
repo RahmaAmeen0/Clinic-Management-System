@@ -4,10 +4,12 @@ using ClinicManagementSystem.Repositories.IRepositories;
 using ClinicManagementSystem.ViewModels;
 using Mapster;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicManagementSystem.Controllers
 {
+    [Authorize]
     public class DoctorsController : Controller
     {
         private readonly IDoctorRepository _repository;

@@ -1,10 +1,12 @@
 ﻿using ClinicManagementSystem.Models;
 using ClinicManagementSystem.Repositories.IRepositories;
 using ClinicManagementSystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicManagementSystem.Controllers
 {
+    [Authorize]
     public class DoctorSchedulesController : Controller
     {
         private readonly IDoctorScheduleRepository _scheduleRepo;

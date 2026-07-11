@@ -4,6 +4,7 @@ using ClinicManagementSystem.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicManagementSystem.Migrations
 {
     [DbContext(typeof(ClincDBContext))]
-    partial class ClincDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260711143159_AddRolesConfiguration")]
+    partial class AddRolesConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -591,21 +594,21 @@ namespace ClinicManagementSystem.Migrations
                         new
                         {
                             Id = "7ca929d2-7ec5-40b9-8137-bc6fa44a56a1",
-                            ConcurrencyStamp = "1",
+                            ConcurrencyStamp = "775002fe-2136-4414-bba3-bf7930c6705b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "8b2345d2-8ec5-41b9-9248-bc6fa44a56b2",
-                            ConcurrencyStamp = "2",
+                            ConcurrencyStamp = "0031bf66-f21a-4ce7-a643-86fedca625cb",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
                             Id = "9c3456d3-9ec6-42b9-0359-bc6fa44a56c3",
-                            ConcurrencyStamp = "3",
+                            ConcurrencyStamp = "1ac2b7d2-d93a-41e7-bd72-51dd4854b1fe",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });

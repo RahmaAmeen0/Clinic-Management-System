@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClinicManagementSystem.Context
 {
-    public class ClincDBContext: IdentityDbContext<IdentityUser>
+    public class ClincDBContext: IdentityDbContext<ApplicationUser>
     {
         public ClincDBContext() { }
         public ClincDBContext(DbContextOptions<ClincDBContext> options) : base(options) { }

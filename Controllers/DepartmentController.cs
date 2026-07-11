@@ -1,9 +1,11 @@
 ﻿using ClinicManagementSystem.Models;
 using ClinicManagementSystem.Repositories.IRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicManagementSystem.Controllers
 {
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _departmentRepository;

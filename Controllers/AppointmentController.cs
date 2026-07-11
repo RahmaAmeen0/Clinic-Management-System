@@ -3,9 +3,11 @@ using ClinicManagementSystem.Repositories.IRepositories;
 using ClinicManagementSystem.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClinicManagementSystem.Controllers
 {
+    [Authorize(Roles = "Patient")]
     public class AppointmentController : Controller
     {
         private readonly IPatientRepository _patientRepo;
